@@ -27,6 +27,37 @@ def login():
     return render_template('login.html')
 
 
+@auth_bp.route('/dev-login', methods=['POST'])
+def dev_login():
+    """Development login route for testing without Auth0"""
+    try:
+        # Create or get a test user
+        user = User.query.filter_by(email='admin@agvfinance.com').first()
+        
+        if not user:
+            user = User(
+                auth0_id='dev_user_123',
+                email='admin@agvfinance.com',
+                username='admin',
+                name='AGV Admin'
+            )
+            db.session.add(user)
+            db.session.commit()
+
+        # Update last login
+        from datetime import datetime
+        user.last_login = datetime.utcnow()
+        db.session.commit()
+
+        login_user(user)
+        flash('Logged in successfully (Development Mode)', 'success')
+        return redirect(url_for('dashboard.index'))
+
+    except Exception as e:
+        flash(f'Development login error: {str(e)}', 'error')
+        return redirect(url_for('auth.login'))
+
+
 @auth_bp.route('/auth0-login')
 def auth0_login():
     """Redirect to Auth0 for authentication"""
@@ -49,6 +80,7 @@ def callback():
                 user = User(
                     auth0_id=user_info['sub'],
                     email=user_info['email'],
+                    username=user_info.get('preferred_username', user_info['email']),
                     name=user_info['name']
                 )
                 db.session.add(user)
