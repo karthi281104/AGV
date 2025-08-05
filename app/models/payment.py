@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
 import uuid
+from sqlalchemy import Numeric
 
 class Payment(db.Model):
     """Payment model for tracking loan payments and history."""
@@ -10,9 +11,9 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     payment_id = db.Column(db.String(20), unique=True, nullable=False, index=True)
     loan_id = db.Column(db.Integer, db.ForeignKey('loans.id'), nullable=False)
-    amount = db.Column(db.Decimal(15, 2), nullable=False)
-    principal_paid = db.Column(db.Decimal(15, 2), nullable=False, default=0)
-    interest_paid = db.Column(db.Decimal(15, 2), nullable=False, default=0)
+    amount = db.Column(Numeric(15, 2), nullable=False)
+    principal_paid = db.Column(Numeric(15, 2), nullable=False, default=0)
+    interest_paid = db.Column(Numeric(15, 2), nullable=False, default=0)
     payment_date = db.Column(db.Date, nullable=False, default=datetime.utcnow().date)
     payment_method = db.Column(db.String(50), nullable=False)  # cash, cheque, bank_transfer, upi
     receipt_number = db.Column(db.String(100), nullable=True)

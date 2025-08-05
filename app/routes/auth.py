@@ -14,9 +14,13 @@ def login():
         return redirect(url_for('dashboard.index'))
     
     # If Auth0 is configured, redirect to Auth0
-    if current_app.config.get('AUTH0_CLIENT_ID'):
-        redirect_uri = url_for('auth.callback', _external=True)
-        return oauth.auth0.authorize_redirect(redirect_uri)
+    if current_app.config.get('AUTH0_CLIENT_ID') and current_app.config.get('AUTH0_CLIENT_ID') != 'your-auth0-client-id':
+        try:
+            redirect_uri = url_for('auth.callback', _external=True)
+            return oauth.auth0.authorize_redirect(redirect_uri)
+        except Exception as e:
+            current_app.logger.error(f'Auth0 redirect error: {str(e)}')
+            flash('Auth0 authentication is not available. Using development login.', 'warning')
     
     # Otherwise show local login form
     return render_template('auth/login.html')

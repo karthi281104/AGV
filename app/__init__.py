@@ -38,16 +38,19 @@ def create_app(config_name=None):
     login_manager.login_message_category = 'info'
     
     # Configure Auth0
-    if app.config.get('AUTH0_CLIENT_ID'):
-        oauth.register(
-            name='auth0',
-            client_id=app.config['AUTH0_CLIENT_ID'],
-            client_secret=app.config['AUTH0_CLIENT_SECRET'],
-            server_metadata_url=f"https://{app.config['AUTH0_DOMAIN']}/.well-known/openid_configuration",
-            client_kwargs={
-                'scope': 'openid email profile'
-            }
-        )
+    if app.config.get('AUTH0_CLIENT_ID') and app.config.get('AUTH0_CLIENT_ID') != 'your-auth0-client-id':
+        try:
+            oauth.register(
+                name='auth0',
+                client_id=app.config['AUTH0_CLIENT_ID'],
+                client_secret=app.config['AUTH0_CLIENT_SECRET'],
+                server_metadata_url=f"https://{app.config['AUTH0_DOMAIN']}/.well-known/openid_configuration",
+                client_kwargs={
+                    'scope': 'openid email profile'
+                }
+            )
+        except Exception as e:
+            app.logger.warning(f'Auth0 configuration failed: {str(e)}. Development mode will be used.')
     
     # Register blueprints
     from app.routes.main import bp as main_bp

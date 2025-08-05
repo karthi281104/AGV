@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Calculator - AGV Finance and Loans{% endblock %}
+
+{% block additional_css %}
+<style>
+.calculator-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 80vh;
+    padding: 3rem 0;
+}
+
+.calculator-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.calculator-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
+
+.result-item {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.realtime-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    background: #28a745;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="calculator-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h1 class="fw-bold text-primary">Loan Calculators</h1>
+                <p class="lead text-muted">Calculate your EMI and plan your finances with our easy-to-use calculators</p>
+                
+                <div class="form-check form-switch d-inline-block mt-3">
+                    <input class="form-check-input" type="checkbox" id="realtimeCalculation" checked>
+                    <label class="form-check-label" for="realtimeCalculation">
+                        Real-time calculation
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- EMI Calculator -->
+            <div class="col-lg-6">
+                <div class="card calculator-card h-100">
+                    <div class="card-header bg-primary text-white position-relative">
+                        <h4 class="mb-0"><i class="bi bi-calculator"></i> EMI Calculator</h4>
+                        <p class="mb-0 opacity-75">Calculate your Equated Monthly Installment</p>
+                        <div class="realtime-indicator"></div>
+                    </div>
+                    <div class="card-body">
+                        <form id="emiCalculatorForm" class="needs-validation" novalidate>
+                            <div class="mb-4">
+                                <label for="principal" class="form-label fw-semibold">
+                                    Loan Amount <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control currency-input" id="principal" 
+                                           name="principal" placeholder="100000" min="1000" max="50000000" required>
+                                </div>
+                                <div class="form-text">Enter amount between ₹1,000 to ₹5,00,00,000</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="rate" class="form-label fw-semibold">
+                                    Interest Rate <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control percentage-input" id="rate" 
+                                           name="rate" placeholder="12.5" min="1" max="30" step="0.1" required>
+                                    <span class="input-group-text">% per annum</span>
+                                </div>
+                                <div class="form-text">Interest rate between 1% to 30%</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="tenure" class="form-label fw-semibold">
+                                    Loan Tenure <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="tenure" 
+                                           name="tenure" placeholder="12" min="1" max="360" required>
+                                    <span class="input-group-text">Months</span>
+                                </div>
+                                <div class="form-text">Tenure between 1 to 360 months</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                                <i class="bi bi-calculator"></i> Calculate EMI
+                            </button>
+                        </form>
+                        
+                        <div id="emiResult" class="d-none"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gold Loan Calculator -->
+            <div class="col-lg-6">
+                <div class="card calculator-card h-100">
+                    <div class="card-header bg-warning text-dark position-relative">
+                        <h4 class="mb-0"><i class="bi bi-gem"></i> Gold Loan Calculator</h4>
+                        <p class="mb-0 opacity-75">Calculate eligible loan amount against gold</p>
+                        <div class="realtime-indicator"></div>
+                    </div>
+                    <div class="card-body">
+                        <form id="goldLoanCalculatorForm" class="needs-validation" novalidate>
+                            <div class="mb-4">
+                                <label for="goldWeight" class="form-label fw-semibold">
+                                    Gold Weight <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="goldWeight" 
+                                           name="weight" placeholder="10" min="1" max="10000" step="0.1" required>
+                                    <span class="input-group-text">grams</span>
+                                </div>
+                                <div class="form-text">Weight in grams (minimum 1 gram)</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="goldPurity" class="form-label fw-semibold">
+                                    Gold Purity <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="goldPurity" name="purity" required>
+                                    <option value="24">24 Carat (99.9% pure)</option>
+                                    <option value="22" selected>22 Carat (91.7% pure)</option>
+                                    <option value="18">18 Carat (75% pure)</option>
+                                    <option value="14">14 Carat (58.3% pure)</option>
+                                </select>
+                                <div class="form-text">Select your gold purity level</div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="goldRate" class="form-label fw-semibold">
+                                    Current Gold Rate <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="goldRate" 
+                                           name="rate" placeholder="5000" min="1000" max="20000" required>
+                                    <span class="input-group-text">per gram</span>
+                                </div>
+                                <div class="form-text">
+                                    Current market rate per gram
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-2" onclick="updateGoldRates()">
+                                        <i class="bi bi-arrow-clockwise"></i> Update
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="ltvRatio" class="form-label fw-semibold">LTV Ratio</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="ltvRatio" 
+                                           name="ltv" value="75" min="50" max="90" readonly>
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <div class="form-text">Loan to Value ratio (fixed at 75%)</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-warning btn-lg w-100 mb-3">
+                                <i class="bi bi-gem"></i> Calculate Loan Amount
+                            </button>
+                        </form>
+                        
+                        <div id="goldLoanResult" class="d-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Information -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Important Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary">EMI Calculator</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Calculations based on reducing balance method</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Results are indicative and for reference only</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Actual rates may vary based on profile assessment</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Processing fees and other charges not included</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-warning">Gold Loan Calculator</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>LTV ratio fixed at 75% as per RBI guidelines</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Gold rates are subject to market fluctuations</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Final loan amount depends on gold assessment</li>
+                                    <li><i class="bi bi-check-circle text-success me-2"></i>Minimum gold weight requirement: 1 gram</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Disclaimer:</strong> These calculations are for informational purposes only. 
+                            Actual loan terms and conditions may vary. Please contact our representatives for accurate quotes and eligibility criteria.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Call to Action -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <h4 class="mb-3">Ready to Apply?</h4>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url_for('main.apply') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-file-text"></i> Apply for Loan
+                    </a>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-telephone"></i> Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ url_for('static', filename='js/calculator.js') }}"></script>
+<script>
+// Update gold rates (mock function - in production would fetch from API)
+function updateGoldRates() {
+    const goldRateInput = document.getElementById('goldRate');
+    
+    // Simulate API call
+    goldRateInput.disabled = true;
+    goldRateInput.value = 'Loading...';
+    
+    setTimeout(() => {
+        // Mock current gold rate
+        const currentRate = Math.floor(Math.random() * 1000) + 4500; // Random rate between 4500-5500
+        goldRateInput.value = currentRate;
+        goldRateInput.disabled = false;
+        
+        // Trigger calculation if real-time is enabled
+        const realtimeCheckbox = document.getElementById('realtimeCalculation');
+        if (realtimeCheckbox && realtimeCheckbox.checked) {
+            goldRateInput.dispatchEvent(new Event('input'));
+        }
+        
+        AGV.showAlert('success', `Gold rate updated to ₹${currentRate}/gram`);
+    }, 1000);
+}
+
+// Enhanced form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Find first invalid field and focus
+                const firstInvalid = form.querySelector(':invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                    AGV.showAlert('error', 'Please fill in all required fields correctly.');
+                }
+            }
+            
+            form.classList.add('was-validated');
+        });
+    });
+});
+</script>
+{% endblock %}

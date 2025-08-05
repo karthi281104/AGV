@@ -2,6 +2,7 @@ from app import db
 from datetime import datetime, timedelta
 import uuid
 import json
+from sqlalchemy import Numeric
 
 class Loan(db.Model):
     """Loan model for managing loan information and calculations."""
@@ -11,14 +12,14 @@ class Loan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     loan_id = db.Column(db.String(20), unique=True, nullable=False, index=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
-    principal_amount = db.Column(db.Decimal(15, 2), nullable=False)
-    interest_rate = db.Column(db.Decimal(5, 2), nullable=False)  # Annual interest rate
+    principal_amount = db.Column(Numeric(15, 2), nullable=False)
+    interest_rate = db.Column(Numeric(5, 2), nullable=False)  # Annual interest rate
     term_months = db.Column(db.Integer, nullable=False)
     loan_type = db.Column(db.String(50), nullable=False)  # personal, gold, vehicle, home
     status = db.Column(db.String(20), nullable=False, default='pending')  # pending, approved, disbursed, closed, defaulted
     disbursed_date = db.Column(db.Date, nullable=True)
     maturity_date = db.Column(db.Date, nullable=True)
-    emi_amount = db.Column(db.Decimal(15, 2), nullable=True)
+    emi_amount = db.Column(Numeric(15, 2), nullable=True)
     
     # Surety information
     surety_name = db.Column(db.String(255), nullable=True)

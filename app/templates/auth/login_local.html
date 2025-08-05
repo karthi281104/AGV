@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Development Login - AGV Finance and Loans{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-gear text-warning" style="font-size: 3rem;"></i>
+                        <h3 class="mt-2">Development Login</h3>
+                        <p class="text-muted">Quick login for development and testing</p>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <small><i class="bi bi-exclamation-triangle"></i> This is a development-only login method. 
+                        In production, Auth0 authentication should be properly configured.</small>
+                    </div>
+                    
+                    <form method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required 
+                                   placeholder="Enter any email address" value="admin@agvfinance.com">
+                            <div class="form-text">Enter any email to create a development account</div>
+                        </div>
+                        
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-box-arrow-in-right"></i> Login (Development Mode)
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr>
+                    
+                    <div class="text-center">
+                        <h6 class="text-muted mb-3">Quick Test Accounts</h6>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <small class="text-muted d-block">Admin</small>
+                                <button class="btn btn-sm btn-outline-danger" onclick="document.getElementById('email').value='admin@agvfinance.com'">
+                                    Set
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">Manager</small>
+                                <button class="btn btn-sm btn-outline-warning" onclick="document.getElementById('email').value='manager@agvfinance.com'">
+                                    Set
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">Employee</small>
+                                <button class="btn btn-sm btn-outline-info" onclick="document.getElementById('email').value='employee@agvfinance.com'">
+                                    Set
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <a href="{{ url_for('main.index') }}" class="text-decoration-none">← Back to Homepage</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

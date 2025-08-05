@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Home - AGV Finance and Loans{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Your Financial Dreams, Our Priority</h1>
+                <p class="lead mb-4">Get instant loans with competitive interest rates. Quick approval, minimal documentation, and transparent processes.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('main.apply') }}" class="btn btn-light btn-lg">Apply for Loan</a>
+                    <a href="{{ url_for('main.calculator') }}" class="btn btn-outline-light btn-lg">EMI Calculator</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="{{ url_for('static', filename='images/hero-finance.svg') }}" alt="Finance" class="img-fluid" style="max-height: 400px;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h3 class="text-primary fw-bold">{{ stats.total_customers }}+</h3>
+                    <p class="text-muted">Happy Customers</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h3 class="text-primary fw-bold">{{ stats.active_loans }}+</h3>
+                    <p class="text-muted">Active Loans</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h3 class="text-primary fw-bold">7.5%</h3>
+                    <p class="text-muted">Starting Interest Rate</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h3 class="text-primary fw-bold">24 Hours</h3>
+                    <p class="text-muted">Quick Approval</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Loan Types -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="fw-bold">Our Loan Products</h2>
+                <p class="text-muted">Choose from our wide range of loan products designed to meet your needs</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            {% for loan_type in stats.loan_types %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 loan-type-card">
+                    <div class="card-body text-center">
+                        <div class="loan-icon mb-3">
+                            {% if loan_type == 'Personal Loan' %}
+                                <i class="bi bi-person-check text-primary" style="font-size: 3rem;"></i>
+                            {% elif loan_type == 'Gold Loan' %}
+                                <i class="bi bi-gem text-warning" style="font-size: 3rem;"></i>
+                            {% elif loan_type == 'Vehicle Loan' %}
+                                <i class="bi bi-car-front text-success" style="font-size: 3rem;"></i>
+                            {% else %}
+                                <i class="bi bi-house text-info" style="font-size: 3rem;"></i>
+                            {% endif %}
+                        </div>
+                        <h5 class="card-title">{{ loan_type }}</h5>
+                        <p class="card-text text-muted">Quick and hassle-free {{ loan_type.lower() }} with competitive rates.</p>
+                        <a href="{{ url_for('main.apply') }}" class="btn btn-outline-primary">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Calculators Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="fw-bold">Loan Calculators</h2>
+                <p class="text-muted">Calculate your EMI and plan your finances</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- EMI Calculator -->
+            <div class="col-lg-6 mb-4">
+                <div class="card calculator-card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-calculator"></i> EMI Calculator</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="emiCalculatorForm">
+                            <div class="mb-3">
+                                <label for="principal" class="form-label">Loan Amount (₹)</label>
+                                <input type="number" class="form-control" id="principal" placeholder="100000" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="rate" class="form-label">Interest Rate (% per annum)</label>
+                                <input type="number" class="form-control" id="rate" placeholder="12" step="0.1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tenure" class="form-label">Tenure (Months)</label>
+                                <input type="number" class="form-control" id="tenure" placeholder="12" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Calculate EMI</button>
+                        </form>
+                        
+                        <div id="emiResult" class="mt-4 d-none">
+                            <div class="alert alert-success">
+                                <h6>Calculation Result:</h6>
+                                <p class="mb-1"><strong>Monthly EMI:</strong> ₹<span id="emiAmount"></span></p>
+                                <p class="mb-1"><strong>Total Amount:</strong> ₹<span id="totalAmount"></span></p>
+                                <p class="mb-0"><strong>Total Interest:</strong> ₹<span id="totalInterest"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gold Loan Calculator -->
+            <div class="col-lg-6 mb-4">
+                <div class="card calculator-card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-gem"></i> Gold Loan Calculator</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="goldLoanCalculatorForm">
+                            <div class="mb-3">
+                                <label for="goldWeight" class="form-label">Gold Weight (grams)</label>
+                                <input type="number" class="form-control" id="goldWeight" placeholder="10" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="goldPurity" class="form-label">Gold Purity (carats)</label>
+                                <select class="form-select" id="goldPurity" required>
+                                    <option value="22">22 Carat</option>
+                                    <option value="18">18 Carat</option>
+                                    <option value="14">14 Carat</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="goldRate" class="form-label">Gold Rate (₹ per gram)</label>
+                                <input type="number" class="form-control" id="goldRate" placeholder="5000" required>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Calculate Loan Amount</button>
+                        </form>
+                        
+                        <div id="goldLoanResult" class="mt-4 d-none">
+                            <div class="alert alert-warning">
+                                <h6>Eligible Loan Amount:</h6>
+                                <p class="mb-1"><strong>Gold Value:</strong> ₹<span id="goldValue"></span></p>
+                                <p class="mb-0"><strong>Loan Amount (75% LTV):</strong> ₹<span id="loanAmount"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="fw-bold">Why Choose AGV Finance?</h2>
+                <p class="text-muted">We make lending simple, transparent, and customer-friendly</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-lightning text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>Quick Approval</h5>
+                    <p class="text-muted">Get loan approval within 24 hours with minimal documentation required.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-shield-check text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>Secure & Safe</h5>
+                    <p class="text-muted">Your personal and financial information is protected with bank-level security.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-percent text-info" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5>Competitive Rates</h5>
+                    <p class="text-muted">Enjoy some of the best interest rates in the market with flexible repayment options.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-12">
+                <h2 class="fw-bold mb-4">Ready to Get Started?</h2>
+                <p class="lead mb-4">Join thousands of satisfied customers who trust AGV Finance for their loan needs.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url_for('main.apply') }}" class="btn btn-light btn-lg">Apply for Loan</a>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-light btn-lg">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+// EMI Calculator
+document.getElementById('emiCalculatorForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const principal = document.getElementById('principal').value;
+    const rate = document.getElementById('rate').value;
+    const tenure = document.getElementById('tenure').value;
+    
+    try {
+        const response = await fetch('{{ url_for("main.api_calculate_emi") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                principal: parseFloat(principal),
+                rate: parseFloat(rate),
+                tenure: parseInt(tenure)
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('emiAmount').textContent = result.emi.toLocaleString('en-IN');
+            document.getElementById('totalAmount').textContent = result.total_amount.toLocaleString('en-IN');
+            document.getElementById('totalInterest').textContent = result.total_interest.toLocaleString('en-IN');
+            document.getElementById('emiResult').classList.remove('d-none');
+        } else {
+            alert('Error calculating EMI: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error calculating EMI. Please try again.');
+    }
+});
+
+// Gold Loan Calculator
+document.getElementById('goldLoanCalculatorForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const weight = document.getElementById('goldWeight').value;
+    const purity = document.getElementById('goldPurity').value;
+    const rate = document.getElementById('goldRate').value;
+    
+    try {
+        const response = await fetch('{{ url_for("main.api_calculate_gold_loan") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                weight: parseFloat(weight),
+                purity: parseFloat(purity),
+                rate: parseFloat(rate)
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('goldValue').textContent = result.gold_value.toLocaleString('en-IN');
+            document.getElementById('loanAmount').textContent = result.eligible_amount.toLocaleString('en-IN');
+            document.getElementById('goldLoanResult').classList.remove('d-none');
+        } else {
+            alert('Error calculating gold loan: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error calculating gold loan. Please try again.');
+    }
+});
+</script>
+{% endblock %}

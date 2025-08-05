@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AGV Finance and Loans{% endblock %}
+
+{% block additional_css %}
+<link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-1">Welcome back, {{ current_user.name }}!</h2>
+                    <p class="text-muted mb-0">Here's what's happening with your business today.</p>
+                </div>
+                <div>
+                    <span class="badge bg-primary">{{ current_user.role.title() }}</span>
+                    <small class="text-muted ms-2">Last updated: <span id="lastUpdated">Just now</span></small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Metrics (6 blocks) -->
+    <div class="row g-4 mb-4">
+        <!-- Total Customers with Loans -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card metric-card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title opacity-75">Customers with Loans</h6>
+                            <h3 class="mb-0" id="customersWithLoans">{{ metrics.customers_with_loans }}</h3>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="bi bi-people" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Total Disbursed Amount -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card metric-card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title opacity-75">Total Disbursed</h6>
+                            <h3 class="mb-0" id="totalDisbursed">₹{{ "%.2f"|format(metrics.total_disbursed) }}</h3>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="bi bi-cash-stack" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Total Interest Accrued -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card metric-card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title opacity-75">Interest Accrued</h6>
+                            <h3 class="mb-0" id="totalInterest">₹{{ "%.2f"|format(metrics.total_interest_accrued) }}</h3>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="bi bi-percent" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Outstanding Principal -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card metric-card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title opacity-75">Outstanding Principal</h6>
+                            <h3 class="mb-0" id="outstandingPrincipal">₹{{ "%.2f"|format(metrics.outstanding_principal) }}</h3>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="bi bi-exclamation-triangle" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Overdue Loans -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card metric-card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title opacity-75">Overdue Loans</h6>
+                            <h3 class="mb-0" id="overdueLoans">{{ metrics.overdue_loans_count }}</h3>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="bi bi-clock-history" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monthly Collections -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card metric-card bg-secondary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title opacity-75">Monthly Collections</h6>
+                            <h3 class="mb-0" id="monthlyCollections">₹{{ "%.2f"|format(metrics.monthly_collections) }}</h3>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="bi bi-calendar-month" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('customer.add_customer') }}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-person-plus"></i> Add Customer
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('loan.add_loan') }}" class="btn btn-outline-success w-100">
+                                <i class="bi bi-cash-coin"></i> New Loan
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('payment.add_payment') }}" class="btn btn-outline-info w-100">
+                                <i class="bi bi-credit-card"></i> Record Payment
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('dashboard.reports') }}" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-graph-up"></i> View Reports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activities -->
+    <div class="row g-4">
+        <!-- Recent Loans -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Loans</h5>
+                    <a href="{{ url_for('loan.list_loans') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_loans %}
+                        <div class="list-group list-group-flush">
+                            {% for loan in recent_loans %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <h6 class="mb-1">{{ loan.loan_id }}</h6>
+                                    <p class="mb-1 text-muted">{{ loan.customer.name }}</p>
+                                    <small class="text-muted">{{ loan.created_at.strftime('%d/%m/%Y') }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold">₹{{ "%.2f"|format(loan.principal_amount) }}</span>
+                                    <br>
+                                    <span class="badge bg-{{ 'success' if loan.status == 'disbursed' else 'warning' }}">
+                                        {{ loan.status.title() }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3">No recent loans found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Payments -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-credit-card"></i> Recent Payments</h5>
+                    <a href="{{ url_for('payment.list_payments') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_payments %}
+                        <div class="list-group list-group-flush">
+                            {% for payment in recent_payments %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <h6 class="mb-1">{{ payment.payment_id }}</h6>
+                                    <p class="mb-1 text-muted">{{ payment.loan.customer.name }}</p>
+                                    <small class="text-muted">{{ payment.payment_date.strftime('%d/%m/%Y') }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold text-success">₹{{ "%.2f"|format(payment.amount) }}</span>
+                                    <br>
+                                    <small class="text-muted">{{ payment.payment_method.title() }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3">No recent payments found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+// Real-time updates using Socket.IO
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof io !== 'undefined') {
+        const socket = io();
+        
+        socket.on('connect', function() {
+            console.log('Connected to dashboard updates');
+        });
+        
+        socket.on('metrics_update', function(data) {
+            updateMetrics(data);
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
+        });
+        
+        // Request metrics update every 30 seconds
+        setInterval(function() {
+            socket.emit('request_metrics_update');
+        }, 30000);
+    }
+});
+
+function updateMetrics(metrics) {
+    document.getElementById('customersWithLoans').textContent = metrics.customers_with_loans;
+    document.getElementById('totalDisbursed').textContent = '₹' + parseFloat(metrics.total_disbursed).toFixed(2);
+    document.getElementById('totalInterest').textContent = '₹' + parseFloat(metrics.total_interest_accrued).toFixed(2);
+    document.getElementById('outstandingPrincipal').textContent = '₹' + parseFloat(metrics.outstanding_principal).toFixed(2);
+    document.getElementById('overdueLoans').textContent = metrics.overdue_loans_count;
+    document.getElementById('monthlyCollections').textContent = '₹' + parseFloat(metrics.monthly_collections).toFixed(2);
+}
+</script>
+{% endblock %}

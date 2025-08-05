@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
 import uuid
+from sqlalchemy import Numeric
 
 class Customer(db.Model):
     """Customer model for storing customer information and biometric data."""
@@ -19,7 +20,7 @@ class Customer(db.Model):
     photo_path = db.Column(db.String(500), nullable=True)
     date_of_birth = db.Column(db.Date, nullable=True)
     occupation = db.Column(db.String(100), nullable=True)
-    annual_income = db.Column(db.Decimal(15, 2), nullable=True)
+    annual_income = db.Column(Numeric(15, 2), nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Login - AGV Finance and Loans{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-bank text-primary" style="font-size: 3rem;"></i>
+                        <h3 class="mt-2">AGV Finance</h3>
+                        <p class="text-muted">Login to your account</p>
+                    </div>
+                    
+                    {% if config.AUTH0_CLIENT_ID and config.AUTH0_CLIENT_ID != 'your-auth0-client-id' %}
+                    <!-- Auth0 Login -->
+                    <div class="d-grid">
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-shield-lock"></i> Login with Auth0
+                        </a>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <small class="text-muted">Secure authentication powered by Auth0</small>
+                    </div>
+                    {% else %}
+                    <!-- Development Login -->
+                    <div class="alert alert-warning">
+                        <small><i class="bi bi-exclamation-triangle"></i> Development Mode - Auth0 not configured</small>
+                    </div>
+                    
+                    <form action="{{ url_for('auth.login_local') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required 
+                                   placeholder="Enter your email">
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-box-arrow-in-right"></i> Login (Development)
+                            </button>
+                        </div>
+                    </form>
+                    {% endif %}
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            Need access? Contact your administrator<br>
+                            <a href="{{ url_for('main.contact') }}" class="text-decoration-none">Contact Support</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Features -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="text-muted text-center mb-3">System Features</h6>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <i class="bi bi-people text-primary"></i>
+                            <small class="d-block text-muted">Customer Management</small>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-cash-coin text-success"></i>
+                            <small class="d-block text-muted">Loan Processing</small>
+                        </div>
+                        <div class="col-4">
+                            <i class="bi bi-graph-up text-info"></i>
+                            <small class="d-block text-muted">Real-time Reports</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
