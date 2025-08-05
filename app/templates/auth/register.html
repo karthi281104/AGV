@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register New Employee - AGV Finance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Register New Employee</h1>
+                <p>Create a new employee account for AGV Finance & Loans</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="auth-form">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control") }}
+                    {% if form.name.errors %}
+                        <div class="field-errors">
+                            {% for error in form.name.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control") }}
+                    {% if form.email.errors %}
+                        <div class="field-errors">
+                            {% for error in form.email.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.role_id.label(class="form-label") }}
+                    {{ form.role_id(class="form-control") }}
+                    {% if form.role_id.errors %}
+                        <div class="field-errors">
+                            {% for error in form.role_id.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Employee Account</button>
+                    <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+
+            <div class="auth-info">
+                <div class="info-box">
+                    <h4>Registration Process</h4>
+                    <ol>
+                        <li>Fill out the employee information above</li>
+                        <li>The employee will receive an email invitation</li>
+                        <li>They can then log in using Auth0 SSO</li>
+                        <li>Optional: Set up biometric authentication for enhanced security</li>
+                    </ol>
+                </div>
+
+                <div class="security-notice">
+                    <i class="icon-shield"></i>
+                    <p><strong>Security Note:</strong> New employees should set up two-factor authentication on their first login for enhanced account security.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

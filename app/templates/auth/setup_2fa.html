@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Up Two-Factor Authentication - AGV Finance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Set Up Two-Factor Authentication</h1>
+                <p>Enhance your account security with biometric authentication</p>
+            </div>
+
+            <div class="2fa-setup">
+                <div class="setup-steps">
+                    <div class="step active" id="step-1">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Choose Your Security Method</h3>
+                            <p>Select how you'd like to authenticate securely:</p>
+                            
+                            <div class="auth-methods">
+                                <div class="method-option" data-method="webauthn">
+                                    <div class="method-icon">
+                                        <i class="icon-fingerprint"></i>
+                                    </div>
+                                    <div class="method-info">
+                                        <h4>Biometric Authentication</h4>
+                                        <p>Use your device's built-in biometrics (fingerprint, Face ID, Windows Hello)</p>
+                                        <ul>
+                                            <li>✓ Most convenient and secure</li>
+                                            <li>✓ No additional hardware needed</li>
+                                            <li>✓ Works on most modern devices</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="method-option" data-method="security-key">
+                                    <div class="method-icon">
+                                        <i class="icon-key"></i>
+                                    </div>
+                                    <div class="method-info">
+                                        <h4>USB Security Key</h4>
+                                        <p>Use a hardware security key (YubiKey, etc.)</p>
+                                        <ul>
+                                            <li>✓ Highest security level</li>
+                                            <li>✓ Works across all devices</li>
+                                            <li>✓ Phishing-resistant</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-actions">
+                                <button class="btn btn-primary" id="continue-setup" disabled>
+                                    Continue Setup
+                                </button>
+                                {% if next_url %}
+                                    <a href="{{ next_url }}" class="btn btn-secondary">Skip for Now</a>
+                                {% else %}
+                                    <a href="{{ url_for('auth.profile') }}" class="btn btn-secondary">Skip for Now</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-2">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Register Your Security Method</h3>
+                            <p>Follow the prompts to register your chosen authentication method:</p>
+                            
+                            <div class="registration-area">
+                                <div id="webauthn-registration" style="display: none;">
+                                    <div class="registration-prompt">
+                                        <div class="prompt-icon">
+                                            <i class="icon-fingerprint pulse"></i>
+                                        </div>
+                                        <h4>Touch Your Sensor or Insert Your Key</h4>
+                                        <p>Follow your device's prompts to complete registration</p>
+                                        
+                                        <div class="credential-name">
+                                            <label for="credential-name">Name this authentication method:</label>
+                                            <input type="text" id="credential-name" placeholder="e.g., Work Laptop, YubiKey" 
+                                                   value="Security Key" class="form-control">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="registration-status" id="registration-status">
+                                        <div class="status-icon"></div>
+                                        <div class="status-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-actions">
+                                <button class="btn btn-primary" id="start-registration">
+                                    Start Registration
+                                </button>
+                                <button class="btn btn-secondary" id="back-to-methods">
+                                    Back
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step" id="step-3">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Setup Complete!</h3>
+                            <div class="success-message">
+                                <div class="success-icon">
+                                    <i class="icon-check"></i>
+                                </div>
+                                <h4>Two-Factor Authentication Enabled</h4>
+                                <p>Your account is now protected with an additional layer of security.</p>
+                            </div>
+
+                            <div class="setup-summary">
+                                <h4>What happens next?</h4>
+                                <ul>
+                                    <li>You'll be prompted for biometric authentication on future logins</li>
+                                    <li>You can add additional security methods from your profile</li>
+                                    <li>Your account is now more secure against unauthorized access</li>
+                                </ul>
+                            </div>
+
+                            <div class="step-actions">
+                                {% if next_url %}
+                                    <a href="{{ next_url }}" class="btn btn-primary">Continue</a>
+                                {% else %}
+                                    <a href="{{ url_for('dashboard.index') }}" class="btn btn-primary">Go to Dashboard</a>
+                                {% endif %}
+                                <a href="{{ url_for('auth.profile') }}" class="btn btn-secondary">Manage Security Settings</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setup-help">
+                    <h4>Having Trouble?</h4>
+                    <div class="help-items">
+                        <div class="help-item">
+                            <strong>Device not supported?</strong>
+                            <p>Make sure you're using a modern browser (Chrome, Firefox, Safari, Edge) on a device with biometric capabilities.</p>
+                        </div>
+                        <div class="help-item">
+                            <strong>USB key not working?</strong>
+                            <p>Ensure your security key is properly inserted and try again. Some keys may require a touch or tap to activate.</p>
+                        </div>
+                        <div class="help-item">
+                            <strong>Still need help?</strong>
+                            <p><a href="mailto:support@agvfinance.com">Contact IT Support</a> for assistance with account security setup.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/webauthn.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            TwoFactorSetup.init();
+        });
+    </script>
+</body>
+</html>
