@@ -15,9 +15,15 @@ bp = Blueprint('main', __name__)
 def index():
     """Homepage with loan calculators and general information"""
     # Get some basic statistics for display
-    total_customers = Customer.query.count()
-    total_loans = Loan.query.count()
-    active_loans = Loan.query.filter_by(status='active').count()
+    try:
+        total_customers = Customer.query.count()
+        total_loans = Loan.query.count()
+        active_loans = Loan.query.filter_by(status='active').count()
+    except Exception:
+        # Database tables might not exist yet
+        total_customers = 0
+        total_loans = 0
+        active_loans = 0
     
     stats = {
         'total_customers': total_customers,
