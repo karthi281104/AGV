@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Customer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Customer</h1>
+        <form action="{{ url_for('customer.add_customer') }}" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="contact_info">Contact Information:</label>
+                <input type="text" id="contact_info" name="contact_info" required>
+            </div>
+            <button type="submit">Add Customer</button>
+        </form>
+        <a href="{{ url_for('customer.customer_list') }}">Back to Customer List</a>
+    </div>
+</body>
+</html>

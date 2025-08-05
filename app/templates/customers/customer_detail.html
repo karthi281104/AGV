@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Detail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% include 'base.html' %}
+    <div class="container">
+        <h1>Customer Details</h1>
+        <div class="customer-info">
+            <p><strong>ID:</strong> {{ customer.id }}</p>
+            <p><strong>Name:</strong> {{ customer.name }}</p>
+            <p><strong>Contact Info:</strong> {{ customer.contact_info }}</p>
+        </div>
+        <a href="{{ url_for('customer_list') }}">Back to Customer List</a>
+    </div>
+</body>
+</html>

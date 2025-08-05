@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <title>User Dashboard</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Your Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                <li><a href="{{ url_for('customer.customer_list') }}">Customers</a></li>
+                <li><a href="{{ url_for('loan.loan_list') }}">Loans</a></li>
+                <li><a href="{{ url_for('payment.payment_history') }}">Payments</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Your Information</h2>
+            <p>Username: {{ user.username }}</p>
+            <p>Email: {{ user.email }}</p>
+        </section>
+        <section>
+            <h2>Your Loans</h2>
+            <ul>
+                {% for loan in loans %}
+                    <li><a href="{{ url_for('loan.loan_detail', loan_id=loan.id) }}">{{ loan.amount }} - {{ loan.status }}</a></li>
+                {% endfor %}
+            </ul>
+        </section>
+        <section>
+            <h2>Your Payments</h2>
+            <ul>
+                {% for payment in payments %}
+                    <li>Payment of {{ payment.amount }} on {{ payment.date }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; {{ year }} AGV Finance</p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

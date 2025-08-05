@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGV Finance Loans</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to AGV Finance Loans</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                <li><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('customer.customer_list') }}">Customers</a></li>
+                <li><a href="{{ url_for('loan.loan_list') }}">Loans</a></li>
+                <li><a href="{{ url_for('payment.payment_history') }}">Payments</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Our Services</h2>
+        <p>We offer a variety of loan options to meet your financial needs.</p>
+        <p>Explore our services and find the right loan for you!</p>
+    </main>
+    <footer>
+        <p>&copy; 2023 AGV Finance Loans. All rights reserved.</p>
+    </footer>
+</body>
+</html>

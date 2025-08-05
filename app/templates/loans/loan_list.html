@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% include 'base.html' %}
+    <div class="container">
+        <h1>Loan List</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Amount</th>
+                    <th>Interest Rate</th>
+                    <th>Term</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in loans %}
+                <tr>
+                    <td>{{ loan.id }}</td>
+                    <td>{{ loan.amount }}</td>
+                    <td>{{ loan.interest_rate }}%</td>
+                    <td>{{ loan.term }} months</td>
+                    <td>
+                        <a href="{{ url_for('loan_detail', loan_id=loan.id) }}">View</a>
+                        <a href="{{ url_for('loan_edit', loan_id=loan.id) }}">Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('loan_form') }}">Apply for a New Loan</a>
+    </div>
+</body>
+</html>

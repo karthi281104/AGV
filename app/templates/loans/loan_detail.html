@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Detail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% include 'base.html' %}
+    
+    <div class="container">
+        <h1>Loan Detail</h1>
+        <div class="loan-detail">
+            <h2>Loan ID: {{ loan.id }}</h2>
+            <p><strong>Amount:</strong> {{ loan.amount }}</p>
+            <p><strong>Interest Rate:</strong> {{ loan.interest_rate }}%</p>
+            <p><strong>Term:</strong> {{ loan.term }} months</p>
+            <p><strong>Status:</strong> {{ loan.status }}</p>
+            <p><strong>Created At:</strong> {{ loan.created_at }}</p>
+        </div>
+        <a href="{{ url_for('loan.loan_list') }}" class="btn">Back to Loan List</a>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
