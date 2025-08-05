@@ -9,18 +9,23 @@
 <body>
     <div class="container">
         <h2>Login</h2>
+        <div class="demo-info" style="background: #f0f8ff; padding: 1rem; margin-bottom: 1rem; border-radius: 5px; border-left: 4px solid #0066cc;">
+            <strong>Demo Login:</strong><br>
+            Username: <code>demo</code><br>
+            Password: <code>demo123</code>
+        </div>
         <form action="{{ url_for('auth.login') }}" method="post">
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" required value="demo">
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" required value="demo123">
             </div>
             <button type="submit">Login</button>
         </form>
-        <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a></p>
+        <p>Use Auth0 to login: <a href="{{ url_for('auth.auth0_login') }}">Login with Auth0</a></p>
     </div>
 </body>
 </html>

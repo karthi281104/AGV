@@ -19,11 +19,36 @@ auth0 = oauth.register(
 )
 
 
-@auth_bp.route('/login')
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    """Display login page"""
+    """Display login page and handle demo login"""
     if current_user.is_authenticated:
         return redirect(url_for('dashboard.index'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Demo login for testing (remove in production)
+        if username == 'demo' and password == 'demo123':
+            # Create or get demo user
+            demo_user = User.query.filter_by(email='demo@agvfinance.com').first()
+            if not demo_user:
+                demo_user = User(
+                    auth0_id='demo_user',
+                    email='demo@agvfinance.com',
+                    name='Demo User',
+                    role='admin'
+                )
+                db.session.add(demo_user)
+                db.session.commit()
+            
+            login_user(demo_user)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('dashboard.index'))
+        else:
+            flash('Invalid credentials. Use demo/demo123 for testing.', 'error')
+    
     return render_template('login.html')
 
 
