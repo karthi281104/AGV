@@ -36,7 +36,7 @@
                             <a class="nav-link" href="#calculators">Calculators</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-nav" href="/login">Login</a>
+                            <a class="nav-link btn-nav" href="{{ url_for('auth.login') }}">Login</a>
                         </li>
                     </ul>
                 </div>
@@ -56,7 +56,7 @@
                         <h2>Private Loan <span class="typing-text">Management</span></h2>
                         <p>Secure financial services backed by gold and land assets. Exclusive loan management system for tracking, processing, and managing financial agreements.</p>
                         <div class="mt-4 btn-wrapper">
-                            <a href="/login" class="btn btn-primary me-2 btn-glow">Secure Login</a>
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-primary me-2 btn-glow">Secure Login</a>
                             <a href="#calculators" class="btn btn-outline-secondary btn-hover-effect">Loan Calculators</a>
                         </div>
                     </div>
@@ -153,7 +153,7 @@
                 <div class="cta-content text-center">
                     <h2>Secure Access Required</h2>
                     <p>This system contains confidential financial information. Only authorized personnel may proceed.</p>
-                    <a href="/login" class="btn btn-light btn-lg mt-4 btn-hover-effect">Secure Login</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-light btn-lg mt-4 btn-hover-effect">Secure Login</a>
                 </div>
             </div>
         </section>

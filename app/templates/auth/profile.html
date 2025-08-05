@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile - AGV Finance{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa fa-user"></i> User Profile</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Flash messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('auth.update_profile') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Basic Information</h5>
+                                
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" 
+                                           value="{{ user.name }}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" 
+                                           value="{{ user.email }}" readonly>
+                                    <div class="form-text">Email is managed by Auth0 and cannot be changed here.</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="department" class="form-label">Department</label>
+                                    <input type="text" class="form-control" id="department" name="department" 
+                                           value="{{ user.department or '' }}" placeholder="e.g., Finance, Operations">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" 
+                                           value="{{ user.phone or '' }}" placeholder="+1 (555) 123-4567">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    <input type="text" class="form-control" id="role" 
+                                           value="{{ user.role.title() }}" readonly>
+                                    <div class="form-text">Role is managed by administrators.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Preferences</h5>
+                                
+                                {% set prefs = user.get_preferences() %}
+                                
+                                <div class="mb-3">
+                                    <label for="theme" class="form-label">Theme</label>
+                                    <select class="form-select" id="theme" name="theme">
+                                        <option value="light" {{ 'selected' if prefs.get('theme', 'light') == 'light' }}>Light</option>
+                                        <option value="dark" {{ 'selected' if prefs.get('theme') == 'dark' }}>Dark</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="language" class="form-label">Language</label>
+                                    <select class="form-select" id="language" name="language">
+                                        <option value="en" {{ 'selected' if prefs.get('language', 'en') == 'en' }}>English</option>
+                                        <option value="es" {{ 'selected' if prefs.get('language') == 'es' }}>Spanish</option>
+                                        <option value="fr" {{ 'selected' if prefs.get('language') == 'fr' }}>French</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="notifications" name="notifications"
+                                               {{ 'checked' if prefs.get('notifications', True) }}>
+                                        <label class="form-check-label" for="notifications">
+                                            Enable email notifications
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h6>Account Information</h6>
+                                    <p class="text-muted mb-1">
+                                        <strong>Member since:</strong> {{ user.created_at.strftime('%B %d, %Y') }}
+                                    </p>
+                                    {% if user.last_login %}
+                                    <p class="text-muted mb-1">
+                                        <strong>Last login:</strong> {{ user.last_login.strftime('%B %d, %Y at %I:%M %p') }}
+                                    </p>
+                                    {% endif %}
+                                    <p class="text-muted mb-0">
+                                        <strong>Status:</strong> 
+                                        <span class="badge {{ 'bg-success' if user.is_active else 'bg-danger' }}">
+                                            {{ 'Active' if user.is_active else 'Inactive' }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-save"></i> Save Changes
+                            </button>
+                            <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    border-radius: 0.75rem;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    border: none;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-1px);
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+h5, h6 {
+    color: #333;
+    font-weight: 600;
+}
+</style>
+{% endblock %}
