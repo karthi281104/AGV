@@ -6,6 +6,7 @@ Handles loan management with principal, interest, terms, and documentation
 from datetime import datetime, date
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Numeric
 from app import db
 import math
 
@@ -20,14 +21,14 @@ class Loan(db.Model):
     
     # Loan Details
     loan_type = db.Column(db.String(50), nullable=False)  # Personal, Home, Vehicle, Business, etc.
-    principal_amount = db.Column(db.Decimal(15, 2), nullable=False)
-    interest_rate = db.Column(db.Decimal(5, 2), nullable=False)  # Annual interest rate percentage
+    principal_amount = db.Column(Numeric(15, 2), nullable=False)
+    interest_rate = db.Column(Numeric(5, 2), nullable=False)  # Annual interest rate percentage
     loan_term_months = db.Column(db.Integer, nullable=False)
     
     # Calculated Fields
-    emi_amount = db.Column(db.Decimal(15, 2), nullable=False)
-    total_amount = db.Column(db.Decimal(15, 2), nullable=False)
-    total_interest = db.Column(db.Decimal(15, 2), nullable=False)
+    emi_amount = db.Column(Numeric(15, 2), nullable=False)
+    total_amount = db.Column(Numeric(15, 2), nullable=False)
+    total_interest = db.Column(Numeric(15, 2), nullable=False)
     
     # Loan Status and Dates
     status = db.Column(db.String(20), default='pending')  # pending, approved, disbursed, active, closed, defaulted
@@ -38,11 +39,11 @@ class Loan(db.Model):
     maturity_date = db.Column(db.Date)
     
     # Financial Tracking
-    disbursed_amount = db.Column(db.Decimal(15, 2), default=0)
-    outstanding_balance = db.Column(db.Decimal(15, 2), default=0)
-    principal_paid = db.Column(db.Decimal(15, 2), default=0)
-    interest_paid = db.Column(db.Decimal(15, 2), default=0)
-    penalty_amount = db.Column(db.Decimal(15, 2), default=0)
+    disbursed_amount = db.Column(Numeric(15, 2), default=0)
+    outstanding_balance = db.Column(Numeric(15, 2), default=0)
+    principal_paid = db.Column(Numeric(15, 2), default=0)
+    interest_paid = db.Column(Numeric(15, 2), default=0)
+    penalty_amount = db.Column(Numeric(15, 2), default=0)
     
     # EMI Tracking
     total_emis = db.Column(db.Integer, default=0)
@@ -53,11 +54,11 @@ class Loan(db.Model):
     
     # Surety and Guarantor Information
     surety_type = db.Column(db.String(50))  # personal, property, gold, fd, etc.
-    surety_value = db.Column(db.Decimal(15, 2))
+    surety_value = db.Column(Numeric(15, 2))
     guarantor_name = db.Column(db.String(200))
     guarantor_phone = db.Column(db.String(20))
     guarantor_relationship = db.Column(db.String(50))
-    guarantor_income = db.Column(db.Decimal(15, 2))
+    guarantor_income = db.Column(Numeric(15, 2))
     
     # Documents and Verification
     documents_required = db.Column(db.Text)  # JSON list of required documents
@@ -71,13 +72,13 @@ class Loan(db.Model):
     
     # Risk Assessment
     risk_score = db.Column(db.Integer)
-    ltv_ratio = db.Column(db.Decimal(5, 2))  # Loan to Value ratio
-    debt_to_income_ratio = db.Column(db.Decimal(5, 2))
+    ltv_ratio = db.Column(Numeric(5, 2))  # Loan to Value ratio
+    debt_to_income_ratio = db.Column(Numeric(5, 2))
     
     # Processing Information
-    processing_fee = db.Column(db.Decimal(10, 2), default=0)
-    insurance_amount = db.Column(db.Decimal(10, 2), default=0)
-    other_charges = db.Column(db.Decimal(10, 2), default=0)
+    processing_fee = db.Column(Numeric(10, 2), default=0)
+    insurance_amount = db.Column(Numeric(10, 2), default=0)
+    other_charges = db.Column(Numeric(10, 2), default=0)
     
     # Metadata
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

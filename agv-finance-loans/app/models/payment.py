@@ -6,6 +6,7 @@ Tracks all payment transactions with principal/interest breakdown
 from datetime import datetime, date
 from decimal import Decimal
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Numeric
 from app import db
 
 class Payment(db.Model):
@@ -19,11 +20,11 @@ class Payment(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
     
     # Payment Details
-    payment_amount = db.Column(db.Decimal(15, 2), nullable=False)
-    principal_amount = db.Column(db.Decimal(15, 2), nullable=False, default=0)
-    interest_amount = db.Column(db.Decimal(15, 2), nullable=False, default=0)
-    penalty_amount = db.Column(db.Decimal(15, 2), default=0)
-    processing_fee = db.Column(db.Decimal(10, 2), default=0)
+    payment_amount = db.Column(Numeric(15, 2), nullable=False)
+    principal_amount = db.Column(Numeric(15, 2), nullable=False, default=0)
+    interest_amount = db.Column(Numeric(15, 2), nullable=False, default=0)
+    penalty_amount = db.Column(Numeric(15, 2), default=0)
+    processing_fee = db.Column(Numeric(10, 2), default=0)
     
     # Payment Information
     payment_date = db.Column(db.Date, nullable=False, default=date.today)
@@ -45,11 +46,11 @@ class Payment(db.Model):
     # EMI Information
     emi_number = db.Column(db.Integer)  # Which EMI number this payment is for
     due_date = db.Column(db.Date)  # Original due date for this EMI
-    late_fee = db.Column(db.Decimal(10, 2), default=0)
+    late_fee = db.Column(Numeric(10, 2), default=0)
     days_late = db.Column(db.Integer, default=0)
     
     # Advance Payment Information
-    advance_amount = db.Column(db.Decimal(15, 2), default=0)  # Amount paid in advance
+    advance_amount = db.Column(Numeric(15, 2), default=0)  # Amount paid in advance
     advance_adjusted = db.Column(db.Boolean, default=False)  # Whether advance has been adjusted
     
     # Receipt Information

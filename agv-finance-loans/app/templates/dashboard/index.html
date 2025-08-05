@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AGV Finance and Loans{% endblock %}
+
+{% block extra_css %}
+<link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0">Dashboard</h1>
+        <p class="text-muted mb-0">Welcome back, {{ current_user.name }}!</p>
+    </div>
+    <div>
+        <span class="badge bg-success">
+            <i class="fas fa-circle me-1"></i>Live Data
+        </span>
+    </div>
+</div>
+
+<!-- 6-Metric Grid -->
+<div class="row g-4 mb-5">
+    <!-- Active Loans -->
+    <div class="col-md-6 col-xl-4">
+        <div class="card metric-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Active Loans</p>
+                        <h3 class="mb-0" id="activeLoansValue">{{ metrics.active_loans.formatted_value }}</h3>
+                        <small class="text-{{ 'success' if metrics.active_loans.change >= 0 else 'danger' }}">
+                            <i class="fas fa-arrow-{{ 'up' if metrics.active_loans.change >= 0 else 'down' }}"></i>
+                            {{ "%.1f"|format(metrics.active_loans.change|abs) }}% from last month
+                        </small>
+                    </div>
+                    <div class="metric-icon bg-primary">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Outstanding Amount -->
+    <div class="col-md-6 col-xl-4">
+        <div class="card metric-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Outstanding Amount</p>
+                        <h3 class="mb-0" id="outstandingValue">{{ metrics.outstanding_amount.formatted_value }}</h3>
+                        <small class="text-{{ 'success' if metrics.outstanding_amount.change >= 0 else 'danger' }}">
+                            <i class="fas fa-arrow-{{ 'up' if metrics.outstanding_amount.change >= 0 else 'down' }}"></i>
+                            {{ "%.1f"|format(metrics.outstanding_amount.change|abs) }}% from last month
+                        </small>
+                    </div>
+                    <div class="metric-icon bg-warning">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Monthly Collections -->
+    <div class="col-md-6 col-xl-4">
+        <div class="card metric-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Monthly Collections</p>
+                        <h3 class="mb-0" id="collectionsValue">{{ metrics.monthly_collections.formatted_value }}</h3>
+                        <small class="text-{{ 'success' if metrics.monthly_collections.change >= 0 else 'danger' }}">
+                            <i class="fas fa-arrow-{{ 'up' if metrics.monthly_collections.change >= 0 else 'down' }}"></i>
+                            {{ "%.1f"|format(metrics.monthly_collections.change|abs) }}% from last month
+                        </small>
+                    </div>
+                    <div class="metric-icon bg-success">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Customers -->
+    <div class="col-md-6 col-xl-4">
+        <div class="card metric-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">New Customers</p>
+                        <h3 class="mb-0" id="customersValue">{{ metrics.new_customers.formatted_value }}</h3>
+                        <small class="text-{{ 'success' if metrics.new_customers.change >= 0 else 'danger' }}">
+                            <i class="fas fa-arrow-{{ 'up' if metrics.new_customers.change >= 0 else 'down' }}"></i>
+                            {{ "%.1f"|format(metrics.new_customers.change|abs) }}% from last month
+                        </small>
+                    </div>
+                    <div class="metric-icon bg-info">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loan Approvals -->
+    <div class="col-md-6 col-xl-4">
+        <div class="card metric-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Loan Approvals</p>
+                        <h3 class="mb-0" id="approvalsValue">{{ metrics.loan_approvals.formatted_value }}</h3>
+                        <small class="text-{{ 'success' if metrics.loan_approvals.change >= 0 else 'danger' }}">
+                            <i class="fas fa-arrow-{{ 'up' if metrics.loan_approvals.change >= 0 else 'down' }}"></i>
+                            {{ "%.1f"|format(metrics.loan_approvals.change|abs) }}% from last month
+                        </small>
+                    </div>
+                    <div class="metric-icon bg-primary">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Overdue Amount -->
+    <div class="col-md-6 col-xl-4">
+        <div class="card metric-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="text-muted mb-1">Overdue Amount</p>
+                        <h3 class="mb-0" id="overdueValue">{{ metrics.overdue_amount.formatted_value }}</h3>
+                        <small class="text-{{ 'danger' if metrics.overdue_amount.change >= 0 else 'success' }}">
+                            <i class="fas fa-arrow-{{ 'up' if metrics.overdue_amount.change >= 0 else 'down' }}"></i>
+                            {{ "%.1f"|format(metrics.overdue_amount.change|abs) }}% from last month
+                        </small>
+                    </div>
+                    <div class="metric-icon bg-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts and Activities Row -->
+<div class="row g-4">
+    <!-- Quick Actions -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('customer.add_customer') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>Add Customer
+                    </a>
+                    <a href="{{ url_for('loan.apply') }}" class="btn btn-outline-success">
+                        <i class="fas fa-plus me-2"></i>New Loan Application
+                    </a>
+                    <a href="{{ url_for('payment.process_payment') }}" class="btn btn-outline-info">
+                        <i class="fas fa-credit-card me-2"></i>Process Payment
+                    </a>
+                    {% if current_user.is_admin() %}
+                    <a href="{{ url_for('loan.pending_approvals') }}" class="btn btn-outline-warning">
+                        <i class="fas fa-clock me-2"></i>Pending Approvals
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activities -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Recent Activities</h5>
+                <button class="btn btn-sm btn-outline-secondary" onclick="refreshActivities()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                {% if activities %}
+                <div class="activity-feed">
+                    {% for activity in activities %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="{{ activity.icon }}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h6 class="mb-1">{{ activity.title }}</h6>
+                            <p class="text-muted mb-1">{{ activity.subtitle }}</p>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ activity.time.strftime('%d %b %Y, %I:%M %p') }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="fas fa-history fa-2x mb-2"></i>
+                    <p>No recent activities</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mt-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Loan Disbursements (Last 30 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="disbursementChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Payment Collections (Last 30 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="collectionChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Socket.IO for real-time updates
+    if (typeof io !== 'undefined') {
+        const socket = io('/dashboard');
+        
+        socket.on('connect', function() {
+            console.log('Connected to dashboard updates');
+        });
+        
+        socket.on('metrics_update', function(data) {
+            updateMetrics(data);
+        });
+        
+        // Request initial metrics
+        socket.emit('request_metrics');
+    }
+    
+    // Load charts
+    loadDashboardCharts();
+});
+
+function updateMetrics(metrics) {
+    // Update metric values
+    document.getElementById('activeLoansValue').textContent = metrics.active_loans.formatted_value;
+    document.getElementById('outstandingValue').textContent = metrics.outstanding_amount.formatted_value;
+    document.getElementById('collectionsValue').textContent = metrics.monthly_collections.formatted_value;
+    document.getElementById('customersValue').textContent = metrics.new_customers.formatted_value;
+    document.getElementById('approvalsValue').textContent = metrics.loan_approvals.formatted_value;
+    document.getElementById('overdueValue').textContent = metrics.overdue_amount.formatted_value;
+}
+
+function refreshActivities() {
+    // Refresh the page to get latest activities
+    window.location.reload();
+}
+
+function loadDashboardCharts() {
+    // Load disbursement chart
+    fetch('/dashboard/api/chart-data/loan-disbursement?period=30')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('disbursementChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Disbursement Amount',
+                        data: data.amounts,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    
+    // Load collection chart
+    fetch('/dashboard/api/chart-data/payment-collection?period=30')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('collectionChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Collection Amount',
+                        data: data.amounts,
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: 'rgb(40, 167, 69)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+}
+</script>
+{% endblock %}

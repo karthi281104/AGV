@@ -29,7 +29,7 @@ def deploy():
 if __name__ == '__main__':
     # For development, use Flask dev server
     if app.config['DEBUG']:
-        socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+        socketio.run(app, debug=True, host='0.0.0.0', port=5000, use_reloader=False)
     else:
         # For production, use gunicorn with socketio support
         socketio.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

@@ -5,6 +5,7 @@ Stores customer personal details, biometric data, and documents
 
 from datetime import datetime, date
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Numeric
 from app import db
 
 class Customer(db.Model):
@@ -42,7 +43,7 @@ class Customer(db.Model):
     employment_status = db.Column(db.String(50))  # Employed, Self-Employed, Unemployed, Retired
     employer_name = db.Column(db.String(200))
     job_title = db.Column(db.String(100))
-    monthly_income = db.Column(db.Decimal(15, 2))
+    monthly_income = db.Column(Numeric(15, 2))
     employment_duration_years = db.Column(db.Integer)
     
     # Financial Information
@@ -51,7 +52,7 @@ class Customer(db.Model):
     bank_ifsc = db.Column(db.String(20))
     credit_score = db.Column(db.Integer)
     existing_loans_count = db.Column(db.Integer, default=0)
-    existing_loans_emi = db.Column(db.Decimal(15, 2), default=0)
+    existing_loans_emi = db.Column(Numeric(15, 2), default=0)
     
     # Biometric Data
     fingerprint_data = db.Column(db.Text)  # Encrypted fingerprint template

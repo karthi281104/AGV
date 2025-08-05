@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Login - AGV Finance and Loans{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-coins fa-3x text-primary mb-3"></i>
+                    <h3 class="fw-bold">Welcome Back</h3>
+                    <p class="text-muted">Sign in to your AGV Finance account</p>
+                </div>
+                
+                <div class="d-grid gap-3">
+                    <a href="{{ url_for('auth.oauth_login') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Sign in with Auth0
+                    </a>
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            By signing in, you agree to our 
+                            <a href="{{ url_for('main.terms_of_service') }}">Terms of Service</a> 
+                            and 
+                            <a href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a>
+                        </small>
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <h6 class="text-muted mb-3">Features</h6>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <i class="fas fa-shield-alt text-success"></i>
+                                <small class="d-block">Secure Login</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <i class="fas fa-fingerprint text-primary"></i>
+                                <small class="d-block">Biometric Auth</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <i class="fas fa-mobile-alt text-info"></i>
+                                <small class="d-block">Mobile Friendly</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-2">
+                                <i class="fas fa-clock text-warning"></i>
+                                <small class="d-block">Quick Access</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                Don't have an account? Contact your administrator for access.
+            </p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Homepage
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

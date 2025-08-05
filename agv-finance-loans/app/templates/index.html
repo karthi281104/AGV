@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}AGV Finance and Loans - Your Trusted Financial Partner{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Your Dreams, Our Finance</h1>
+                <p class="lead mb-4">Get instant loans with competitive interest rates and flexible repayment options. Quick approvals, minimal documentation, and transparent processes.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('main.loan_calculator') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-calculator me-2"></i>Calculate EMI
+                    </a>
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Get Started
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="card bg-white bg-opacity-10 text-white border-0">
+                            <div class="card-body text-center">
+                                <i class="fas fa-users fa-2x mb-2"></i>
+                                <h3 class="card-title">{{ stats.total_customers or 0 }}+</h3>
+                                <p class="card-text">Happy Customers</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-white bg-opacity-10 text-white border-0">
+                            <div class="card-body text-center">
+                                <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
+                                <h3 class="card-title">{{ stats.total_loans or 0 }}+</h3>
+                                <p class="card-text">Loans Disbursed</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-white bg-opacity-10 text-white border-0">
+                            <div class="card-body text-center">
+                                <i class="fas fa-clock fa-2x mb-2"></i>
+                                <h3 class="card-title">24hrs</h3>
+                                <p class="card-text">Quick Approval</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-white bg-opacity-10 text-white border-0">
+                            <div class="card-body text-center">
+                                <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                                <h3 class="card-title">100%</h3>
+                                <p class="card-text">Secure Process</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Loan Calculator Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Quick EMI Calculator</h2>
+                    <p class="text-muted">Calculate your loan EMI in seconds</p>
+                </div>
+                
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <form id="emiCalculatorForm">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="loanAmount" class="form-label">Loan Amount (₹)</label>
+                                    <input type="number" class="form-control" id="loanAmount" value="500000" min="1000" max="10000000">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="interestRate" class="form-label">Interest Rate (%)</label>
+                                    <input type="number" class="form-control" id="interestRate" value="10.5" min="1" max="30" step="0.1">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="loanTerm" class="form-label">Loan Term (Years)</label>
+                                    <input type="number" class="form-control" id="loanTerm" value="5" min="1" max="30">
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Monthly EMI</h5>
+                                            <h3 id="emiResult">₹0</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Total Interest</h5>
+                                            <h3 id="interestResult">₹0</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Loan Types Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Our Loan Products</h2>
+            <p class="text-muted">Choose from our wide range of loan products designed to meet your specific needs</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-home fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Home Loans</h5>
+                        <p class="card-text">Finance your dream home with attractive interest rates starting from 8.5%</p>
+                        <ul class="list-unstyled">
+                            <li><small>✓ Up to 85% financing</small></li>
+                            <li><small>✓ 30-year tenure</small></li>
+                            <li><small>✓ Minimal documentation</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-user fa-3x text-success mb-3"></i>
+                        <h5 class="card-title">Personal Loans</h5>
+                        <p class="card-text">Instant personal loans for all your immediate financial needs</p>
+                        <ul class="list-unstyled">
+                            <li><small>✓ No collateral required</small></li>
+                            <li><small>✓ Quick approval</small></li>
+                            <li><small>✓ Flexible repayment</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-car fa-3x text-warning mb-3"></i>
+                        <h5 class="card-title">Vehicle Loans</h5>
+                        <p class="card-text">Drive your dream car or bike with our competitive vehicle loans</p>
+                        <ul class="list-unstyled">
+                            <li><small>✓ 95% financing</small></li>
+                            <li><small>✓ Competitive rates</small></li>
+                            <li><small>✓ Quick processing</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-briefcase fa-3x text-info mb-3"></i>
+                        <h5 class="card-title">Business Loans</h5>
+                        <p class="card-text">Grow your business with our tailored business financing solutions</p>
+                        <ul class="list-unstyled">
+                            <li><small>✓ Working capital</small></li>
+                            <li><small>✓ Equipment financing</small></li>
+                            <li><small>✓ Business expansion</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Why Choose AGV Finance?</h2>
+            <p class="text-muted">Experience the difference with our customer-centric approach</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="text-center">
+                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-clock fa-2x text-white"></i>
+                    </div>
+                    <h5>Quick Approval</h5>
+                    <p class="text-muted">Get loan approval in as little as 24 hours with our streamlined process</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="text-center">
+                    <div class="bg-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-percentage fa-2x text-white"></i>
+                    </div>
+                    <h5>Competitive Rates</h5>
+                    <p class="text-muted">Enjoy some of the most competitive interest rates in the market</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="text-center">
+                    <div class="bg-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-shield-alt fa-2x text-white"></i>
+                    </div>
+                    <h5>Secure Process</h5>
+                    <p class="text-muted">Your data is protected with bank-grade security and encryption</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="text-center">
+                    <div class="bg-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-file-alt fa-2x text-white"></i>
+                    </div>
+                    <h5>Minimal Documentation</h5>
+                    <p class="text-muted">Simple and minimal documentation requirements for faster processing</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="text-center">
+                    <div class="bg-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-headset fa-2x text-white"></i>
+                    </div>
+                    <h5>24/7 Support</h5>
+                    <p class="text-muted">Round-the-clock customer support to assist you at every step</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="text-center">
+                    <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-mobile-alt fa-2x text-white"></i>
+                    </div>
+                    <h5>Digital Experience</h5>
+                    <p class="text-muted">Complete loan process digitally with our advanced technology platform</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="fw-bold mb-2">Ready to Get Started?</h3>
+                <p class="mb-0">Apply for a loan today and experience our seamless, customer-friendly process</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard.index') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-arrow-right me-2"></i>Apply Now
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // EMI Calculator functionality
+    const loanAmountInput = document.getElementById('loanAmount');
+    const interestRateInput = document.getElementById('interestRate');
+    const loanTermInput = document.getElementById('loanTerm');
+    const emiResult = document.getElementById('emiResult');
+    const interestResult = document.getElementById('interestResult');
+    
+    function calculateEMI() {
+        const principal = parseFloat(loanAmountInput.value) || 0;
+        const annualRate = parseFloat(interestRateInput.value) || 0;
+        const years = parseFloat(loanTermInput.value) || 0;
+        
+        if (principal > 0 && annualRate > 0 && years > 0) {
+            const monthlyRate = annualRate / 100 / 12;
+            const months = years * 12;
+            
+            let emi;
+            if (monthlyRate === 0) {
+                emi = principal / months;
+            } else {
+                const factor = Math.pow(1 + monthlyRate, months);
+                emi = principal * monthlyRate * factor / (factor - 1);
+            }
+            
+            const totalAmount = emi * months;
+            const totalInterest = totalAmount - principal;
+            
+            emiResult.textContent = '₹' + emi.toLocaleString('en-IN', {maximumFractionDigits: 0});
+            interestResult.textContent = '₹' + totalInterest.toLocaleString('en-IN', {maximumFractionDigits: 0});
+        } else {
+            emiResult.textContent = '₹0';
+            interestResult.textContent = '₹0';
+        }
+    }
+    
+    // Add event listeners
+    [loanAmountInput, interestRateInput, loanTermInput].forEach(input => {
+        input.addEventListener('input', calculateEMI);
+    });
+    
+    // Calculate initial values
+    calculateEMI();
+});
+</script>
+{% endblock %}
