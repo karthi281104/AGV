@@ -3,112 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGV Finance & Loans - Secure Login</title>
+    <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<body class="auth-page">
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h1>AGV Finance & Loans</h1>
-                <p>Employee Portal - Secure Access</p>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form action="{{ url_for('auth.login') }}" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
             </div>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="flash-messages">
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
-
-            <div class="auth-methods">
-                <!-- Auth0 SSO Login -->
-                <div class="auth-method primary">
-                    <h3>Single Sign-On</h3>
-                    <p>Sign in with your corporate account</p>
-                    <a href="{{ url_for('auth.auth0_login') }}" class="btn btn-primary btn-large">
-                        <i class="icon-sso"></i>
-                        Sign in with Auth0
-                    </a>
-                </div>
-
-                <div class="auth-divider">
-                    <span>OR</span>
-                </div>
-
-                <!-- WebAuthn Biometric Login -->
-                <div class="auth-method biometric">
-                    <h3>Biometric Authentication</h3>
-                    <p>Use your fingerprint, USB key, or device biometrics</p>
-                    
-                    <form id="webauthn-form" class="auth-form">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" required 
-                                   placeholder="Enter your email address" class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-biometric btn-large" id="webauthn-btn">
-                            <i class="icon-fingerprint"></i>
-                            Sign in with Biometrics
-                        </button>
-                    </form>
-                </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
             </div>
-
-            <div class="auth-info">
-                <div class="security-notice">
-                    <i class="icon-shield"></i>
-                    <div>
-                        <strong>Secure Authentication</strong>
-                        <p>Your connection is encrypted and protected by enterprise-grade security.</p>
-                    </div>
-                </div>
-
-                <div class="auth-help">
-                    <h4>Need Help?</h4>
-                    <ul>
-                        <li><a href="#" id="setup-biometrics">Set up biometric authentication</a></li>
-                        <li><a href="#" id="account-issues">Having account issues?</a></li>
-                        <li><a href="mailto:support@agvfinance.com">Contact IT Support</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- WebAuthn Status Indicator -->
-            <div id="webauthn-status" class="webauthn-status" style="display: none;">
-                <div class="status-content">
-                    <div class="status-icon"></div>
-                    <div class="status-message"></div>
-                </div>
-            </div>
-        </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a></p>
     </div>
-
-    <!-- Session Timeout Warning Modal -->
-    <div id="session-warning-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h3>Session Timeout Warning</h3>
-            <p>Your session will expire in <span id="countdown">5:00</span> minutes due to inactivity.</p>
-            <div class="modal-actions">
-                <button id="extend-session" class="btn btn-primary">Extend Session</button>
-                <button id="logout-now" class="btn btn-secondary">Logout Now</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <script>
-        // Initialize authentication handlers
-        document.addEventListener('DOMContentLoaded', function() {
-            AuthHandler.init();
-            SessionManager.init();
-        });
-    </script>
 </body>
 </html>
