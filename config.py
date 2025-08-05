@@ -25,7 +25,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-                              'postgresql://username:password@localhost/agv_finance_dev'
+                              'sqlite:///agv_finance_dev.db'
 
 development = DevelopmentConfig  # <- THIS LINE IS IMPORTANT
 class ProductionConfig(Config):

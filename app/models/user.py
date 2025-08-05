@@ -7,7 +7,8 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    auth0_id = db.Column(db.String(100), unique=True, nullable=False)
+    auth0_id = db.Column(db.String(100), unique=True, nullable=True)  # Made nullable for demo users
+    username = db.Column(db.String(80), unique=True, nullable=True)  # Added username field
     email = db.Column(db.String(120), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(20), default='employee')  # admin, employee

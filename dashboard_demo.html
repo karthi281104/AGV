@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGV Finance & Loans - Dashboard Demo</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Dashboard Styles for AGV Finance & Loans */
+        :root {
+            --agv-primary: #0066cc;
+            --agv-secondary: #28a745;
+            --agv-warning: #ffc107;
+            --agv-danger: #dc3545;
+            --agv-info: #17a2b8;
+            --agv-light: #f8f9fa;
+            --agv-dark: #343a40;
+            --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --card-hover-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --transition-all: all 0.3s ease;
+        }
+
+        .dashboard-container {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-title {
+            font-weight: 700;
+            color: var(--agv-dark);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .connection-status {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .quick-actions {
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1rem;
+        }
+
+        .metric-card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition-all);
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--agv-primary), var(--agv-secondary));
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .metric-card .card-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--agv-dark);
+            margin: 0;
+        }
+
+        .metric-icon {
+            font-size: 3rem;
+            opacity: 0.1;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition-all);
+        }
+
+        .card:hover {
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .activity-item {
+            padding: 1rem;
+            border-left: 4px solid var(--agv-primary);
+            background: rgba(0, 102, 204, 0.05);
+            margin-bottom: 0.75rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            transition: var(--transition-all);
+        }
+
+        .notification-item {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--agv-info);
+            background: rgba(23, 162, 184, 0.05);
+            box-shadow: var(--card-shadow);
+        }
+
+        .notification-item.warning {
+            border-left-color: var(--agv-warning);
+            background: rgba(255, 193, 7, 0.05);
+        }
+
+        .notification-item.critical {
+            border-left-color: var(--agv-danger);
+            background: rgba(220, 53, 69, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-university me-2"></i>AGV Finance & Loans
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i>Demo User
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-chart-line me-3"></i>Finance Dashboard
+                </h1>
+                <p class="text-muted">Real-time insights into your financial operations</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="dashboard-controls">
+                    <div class="btn-group me-2" role="group">
+                        <button type="button" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                        <button type="button" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                    <span class="badge bg-success connection-status">
+                        <i class="fas fa-wifi me-1"></i>Connected
+                    </span>
+                </div>
+                <div class="last-updated mt-2">
+                    <small class="text-muted">Last updated: Dec 14, 2024 10:30 AM</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="quick-actions">
+                    <button class="btn btn-primary me-2">
+                        <i class="fas fa-user-plus me-1"></i>Add Customer
+                    </button>
+                    <button class="btn btn-success me-2">
+                        <i class="fas fa-coins me-1"></i>New Loan
+                    </button>
+                    <button class="btn btn-info me-2">
+                        <i class="fas fa-credit-card me-1"></i>Record Payment
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <i class="fas fa-search me-1"></i>Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Grid (3x3 Layout) -->
+        <div class="row g-4 mb-5">
+            <!-- Total Customers Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="metric-card card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">Total Customers</h6>
+                                <h2 class="card-title mb-0">1,247</h2>
+                                <div class="metric-trend mt-1">
+                                    <span class="trend-indicator">
+                                        <i class="fas fa-arrow-up text-success"></i>
+                                        <span class="trend-value">+12.5%</span>
+                                    </span>
+                                    <small class="text-muted ms-1">vs last month</small>
+                                </div>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="fas fa-users text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Disbursed Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="metric-card card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">Total Disbursed</h6>
+                                <h2 class="card-title mb-0">₹2.4Cr</h2>
+                                <div class="metric-trend mt-1">
+                                    <span class="trend-indicator">
+                                        <i class="fas fa-arrow-up text-success"></i>
+                                        <span class="trend-value">+8.2%</span>
+                                    </span>
+                                    <small class="text-muted ms-1">portfolio value</small>
+                                </div>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="fas fa-coins text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interest Earned Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="metric-card card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">Interest Earned</h6>
+                                <h2 class="card-title mb-0">₹32.1L</h2>
+                                <div class="metric-trend mt-1">
+                                    <span class="trend-indicator">
+                                        <i class="fas fa-percentage text-info"></i>
+                                        <span class="trend-value">15.2%</span>
+                                    </span>
+                                    <small class="text-muted ms-1">yield rate</small>
+                                </div>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="fas fa-chart-line text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overdue Amount Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="metric-card card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">Overdue Amount</h6>
+                                <h2 class="card-title mb-0">₹4.8L</h2>
+                                <div class="metric-trend mt-1">
+                                    <span class="trend-indicator">
+                                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                                        <span class="trend-value">2.1%</span>
+                                    </span>
+                                    <small class="text-muted ms-1">default rate</small>
+                                </div>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="fas fa-exclamation-circle text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Loans Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="metric-card card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">Active Loans</h6>
+                                <h2 class="card-title mb-0">842</h2>
+                                <div class="metric-trend mt-1">
+                                    <span class="trend-indicator">
+                                        <i class="fas fa-arrow-up text-success"></i>
+                                        <span class="trend-value">+5.7%</span>
+                                    </span>
+                                    <small class="text-muted ms-1">vs last month</small>
+                                </div>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="fas fa-file-contract text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Collections Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="metric-card card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">Monthly Collections</h6>
+                                <h2 class="card-title mb-0">₹18.5L</h2>
+                                <div class="metric-trend mt-1">
+                                    <span class="trend-indicator">
+                                        <i class="fas fa-arrow-up text-success"></i>
+                                        <span class="trend-value">92.3%</span>
+                                    </span>
+                                    <small class="text-muted ms-1">efficiency</small>
+                                </div>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="fas fa-money-bill-wave text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Visualizations -->
+        <div class="row g-4 mb-5">
+            <!-- Portfolio Breakdown Chart -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-pie me-2"></i>Portfolio Breakdown
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="portfolioChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Trends Chart -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-line me-2"></i>Monthly Trends
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="trendsChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities and Notifications -->
+        <div class="row g-4">
+            <!-- Recent Activities -->
+            <div class="col-lg-8">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-history me-2"></i>Recent Activities
+                        </h5>
+                        <button class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="recentActivities" class="activity-list">
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="activity-description">New loan application received from Rajesh Kumar</div>
+                                        <div class="activity-time">
+                                            <i class="fas fa-clock me-1"></i>2 hours ago
+                                        </div>
+                                    </div>
+                                    <div class="activity-type">
+                                        <span class="badge bg-primary">loan_application</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="activity-description">Payment of ₹25,000 received for LOAN001</div>
+                                        <div class="activity-time">
+                                            <i class="fas fa-clock me-1"></i>4 hours ago
+                                        </div>
+                                    </div>
+                                    <div class="activity-type">
+                                        <span class="badge bg-success">payment_received</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="activity-description">New customer registration: Priya Sharma</div>
+                                        <div class="activity-time">
+                                            <i class="fas fa-clock me-1"></i>6 hours ago
+                                        </div>
+                                    </div>
+                                    <div class="activity-type">
+                                        <span class="badge bg-info">customer_created</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Panel -->
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-bell me-2"></i>Notifications
+                            <span class="badge bg-danger ms-2">3</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="notificationsPanel">
+                            <div class="notification-item critical">
+                                <div class="d-flex align-items-start">
+                                    <div class="notification-icon me-3">
+                                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="notification-message">High default rate: 5.2% - requires immediate attention</div>
+                                        <button class="btn btn-sm btn-outline-primary mt-2">
+                                            Take Action
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notification-item warning">
+                                <div class="d-flex align-items-start">
+                                    <div class="notification-icon me-3">
+                                        <i class="fas fa-exclamation-circle text-warning"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="notification-message">15 loans approaching maturity in next 7 days</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="d-flex align-items-start">
+                                    <div class="notification-icon me-3">
+                                        <i class="fas fa-info-circle text-info"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="notification-message">Monthly target achieved: ₹20L collections milestone reached</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Initialize Portfolio Breakdown Chart
+        const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+        new Chart(portfolioCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Gold Loans', 'Bond Loans'],
+                datasets: [{
+                    data: [65, 35],
+                    backgroundColor: ['#ffc107', '#17a2b8'],
+                    borderWidth: 0,
+                    hoverBorderWidth: 3,
+                    hoverBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize Monthly Trends Chart
+        const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+        new Chart(trendsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Disbursements (₹L)',
+                    data: [45, 52, 48, 61, 58, 67],
+                    borderColor: '#0066cc',
+                    backgroundColor: 'rgba(0, 102, 204, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Collections (₹L)',
+                    data: [38, 42, 45, 48, 52, 55],
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Amount (₹L)'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+
+        // Add some interactivity
+        document.querySelectorAll('.metric-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
