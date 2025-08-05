@@ -42,12 +42,22 @@ def dev_login():
                 name='AGV Admin'
             )
             db.session.add(user)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as db_error:
+                db.session.rollback()
+                flash(f'Database error creating user: {str(db_error)}', 'error')
+                return redirect(url_for('auth.login'))
 
         # Update last login
         from datetime import datetime
-        user.last_login = datetime.utcnow()
-        db.session.commit()
+        try:
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+        except Exception as db_error:
+            # If we can't update login time, that's okay
+            db.session.rollback()
+            print(f"Warning: Could not update last login: {db_error}")
 
         login_user(user)
         flash('Logged in successfully (Development Mode)', 'success')
