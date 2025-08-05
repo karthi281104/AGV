@@ -6,12 +6,13 @@
     <title>AGV Finance & Loans - Secure Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body class="auth-page">
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AGV Finance" class="auth-logo">
                 <h1>AGV Finance & Loans</h1>
                 <p>Employee Portal - Secure Access</p>
             </div>
@@ -47,11 +48,11 @@
                     <p>Use your fingerprint, USB key, or device biometrics</p>
                     
                     <form id="webauthn-form" class="auth-form">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <div class="form-group">
                             <label for="email">Email Address</label>
                             <input type="email" id="email" name="email" required 
-                                   placeholder="Enter your email address" class="form-control">
+                                   placeholder="Enter your email address">
                         </div>
                         <button type="submit" class="btn btn-biometric btn-large" id="webauthn-btn">
                             <i class="icon-fingerprint"></i>

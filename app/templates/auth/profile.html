@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - AGV Finance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+    <div class="container">
+        <div class="profile-container">
+            <div class="profile-header">
+                <h1>User Profile</h1>
+                <p>Manage your account settings and security preferences</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="profile-tabs">
+                <div class="tab-nav">
+                    <button class="tab-btn active" data-tab="profile">Profile Information</button>
+                    <button class="tab-btn" data-tab="security">Security Settings</button>
+                    <button class="tab-btn" data-tab="sessions">Active Sessions</button>
+                </div>
+
+                <!-- Profile Information Tab -->
+                <div id="profile-tab" class="tab-content active">
+                    <form method="POST" class="profile-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                {{ form.name.label(class="form-label") }}
+                                {{ form.name(class="form-control") }}
+                                {% if form.name.errors %}
+                                    <div class="field-errors">
+                                        {% for error in form.name.errors %}
+                                            <span class="error">{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" value="{{ current_user.email }}" readonly>
+                                <small class="form-text">Email cannot be changed. Contact administrator if needed.</small>
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.timezone.label(class="form-label") }}
+                                {{ form.timezone(class="form-control") }}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.language.label(class="form-label") }}
+                                {{ form.language(class="form-control") }}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Role</label>
+                                <input type="text" class="form-control" value="{{ current_user.user_role.name.title() if current_user.user_role else 'Employee' }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Account Created</label>
+                                <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%B %d, %Y') }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Notification Preferences</h3>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    {{ form.email_notifications(class="form-checkbox") }}
+                                    {{ form.email_notifications.label(class="checkbox-label") }}
+                                    <small>Receive email notifications for important updates</small>
+                                </div>
+                                <div class="checkbox-item">
+                                    {{ form.security_notifications(class="form-checkbox") }}
+                                    {{ form.security_notifications.label(class="checkbox-label") }}
+                                    <small>Receive alerts for security events and login activities</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Security Settings Tab -->
+                <div id="security-tab" class="tab-content">
+                    <div class="security-section">
+                        <h3>Two-Factor Authentication</h3>
+                        <div class="security-status">
+                            {% if webauthn_enabled %}
+                                <div class="status-enabled">
+                                    <i class="icon-check"></i>
+                                    <span>Biometric authentication is enabled</span>
+                                </div>
+                                <button class="btn btn-secondary" onclick="WebAuthnManager.manageCredentials()">
+                                    Manage Security Keys
+                                </button>
+                            {% else %}
+                                <div class="status-disabled">
+                                    <i class="icon-warning"></i>
+                                    <span>Two-factor authentication is not set up</span>
+                                </div>
+                                <a href="{{ url_for('auth.setup_2fa') }}" class="btn btn-primary">
+                                    Set Up Biometric Authentication
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="security-section">
+                        <h3>Account Security</h3>
+                        <div class="security-info">
+                            <div class="info-item">
+                                <label>Last Login:</label>
+                                <span>{{ current_user.last_login.strftime('%B %d, %Y at %I:%M %p') if current_user.last_login else 'Never' }}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Failed Login Attempts:</label>
+                                <span>{{ current_user.failed_login_attempts }}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Account Status:</label>
+                                <span class="status-{% if current_user.is_account_locked() %}locked{% else %}active{% endif %}">
+                                    {% if current_user.is_account_locked() %}Locked until {{ current_user.locked_until.strftime('%B %d, %Y at %I:%M %p') }}{% else %}Active{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="security-section">
+                        <h3>Session Management</h3>
+                        <div class="session-actions">
+                            <a href="{{ url_for('auth.terminate_all_sessions') }}" class="btn btn-warning" 
+                               onclick="return confirm('This will log you out of all other devices. Continue?')">
+                                Terminate All Other Sessions
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Sessions Tab -->
+                <div id="sessions-tab" class="tab-content">
+                    <div class="sessions-section">
+                        <h3>Active Sessions</h3>
+                        <p>These are the devices currently signed into your account:</p>
+                        
+                        <div class="sessions-list">
+                            {% for session in active_sessions %}
+                                <div class="session-item">
+                                    <div class="session-info">
+                                        <div class="session-device">
+                                            <i class="icon-device"></i>
+                                            <div>
+                                                <strong>{{ session.user_agent or 'Unknown Device' }}</strong>
+                                                {% if session.session_id == session.get('session_id') %}
+                                                    <span class="current-session">Current Session</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="session-details">
+                                            <div class="detail-item">
+                                                <label>IP Address:</label>
+                                                <span>{{ session.ip_address }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <label>Last Activity:</label>
+                                                <span>{{ session.last_activity.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <label>Location:</label>
+                                                <span>{{ session.city + ', ' + session.country if session.city else 'Unknown' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if session.session_id != session.get('session_id') %}
+                                        <div class="session-actions">
+                                            <a href="{{ url_for('auth.terminate_session', session_id=session.id) }}" 
+                                               class="btn btn-small btn-danger"
+                                               onclick="return confirm('Terminate this session?')">
+                                                Terminate
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="{{ url_for('dashboard.index') }}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/webauthn.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ProfileManager.init();
+        });
+    </script>
+</body>
+</html>
