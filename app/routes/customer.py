@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models.customer import Customer
+from app.models.core import Customer
 
 customer_bp = Blueprint('customer', __name__)
 

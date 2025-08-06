@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
-from app.models.loan import Loan
-from app.models.customer import Customer
+from flask_login import login_required
+from app.models.core import Loan, Customer
 from app.utils.calculations import calculate_emi, calculate_gold_loan_amount
 
 main_bp = Blueprint('main', __name__)
@@ -10,6 +10,13 @@ main_bp = Blueprint('main', __name__)
 def index():
     """Public homepage with company info and calculators"""
     return render_template('index.html')
+
+
+@main_bp.route('/dashboard')
+@login_required
+def dashboard():
+    """Simple dashboard redirect for main namespace"""
+    return render_template('dashboard/index.html')
 
 
 @main_bp.route('/calculator/emi', methods=['POST'])

@@ -2,9 +2,7 @@ from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
 from flask_socketio import emit
 from app import db, socketio
-from app.models.customer import Customer
-from app.models.loan import Loan
-from app.models.payment import Payment
+from app.models.core import Customer, Loan, Payment
 from app.models.dashboard import DashboardMetrics, UserPreferences, AlertSettings, DashboardActivity
 from app.utils.dashboard import DashboardCalculations, DashboardNotifications
 from sqlalchemy import func, and_, or_
@@ -19,18 +17,7 @@ dashboard_bp = Blueprint('dashboard', __name__)
 @login_required
 def index():
     """Main dashboard page with comprehensive metrics"""
-    # Log dashboard access
-    DashboardActivity.log_activity(
-        user_id=current_user.id,
-        activity_type='dashboard_access',
-        description=f'{current_user.username} accessed dashboard'
-    )
-    
-    # Get user preferences for dashboard layout
-    preferences = UserPreferences.query.filter_by(user_id=current_user.id).all()
-    user_prefs = {pref.preference_key: json.loads(pref.preference_value) for pref in preferences}
-    
-    return render_template('dashboard/dashboard.html', user_preferences=user_prefs)
+    return f"<h1>Welcome to the Dashboard, {current_user.name}!</h1><p>Login successful! Your role is: {current_user.role}</p>"
 
 
 @dashboard_bp.route('/api/metrics')
