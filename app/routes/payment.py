@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template
-from app.models.payment import Payment
-from app.models.loan import Loan
+from app.models.core import Payment, Loan
 
 payment_bp = Blueprint('payment', __name__)
 

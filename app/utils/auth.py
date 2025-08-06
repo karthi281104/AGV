@@ -2,7 +2,7 @@ from functools import wraps
 from flask import session, redirect, url_for, request, current_app, abort
 from flask_login import current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.models.user import UserSession
+from app.models.auth import UserSession
 from app import db
 import jwt
 from datetime import datetime, timedelta

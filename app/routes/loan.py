@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template
-from app.models.loan import Loan
+from app.models.core import Loan
 
 loan_bp = Blueprint('loan', __name__)
 

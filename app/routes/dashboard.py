@@ -2,9 +2,7 @@ from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
 from flask_socketio import emit
 from app import db, socketio
-from app.models.customer import Customer
-from app.models.loan import Loan
-from app.models.payment import Payment
+from app.models.core import Customer, Loan, Payment
 from app.models.dashboard import DashboardMetrics, UserPreferences, AlertSettings, DashboardActivity
 from app.utils.dashboard import DashboardCalculations, DashboardNotifications
 from sqlalchemy import func, and_, or_

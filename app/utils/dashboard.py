@@ -1,7 +1,5 @@
 from app import db
-from app.models.customer import Customer
-from app.models.loan import Loan
-from app.models.payment import Payment
+from app.models.core import Customer, Loan, Payment
 from app.models.dashboard import DashboardMetrics, RealtimeData, DashboardActivity
 from sqlalchemy import func, and_, or_, desc
 from datetime import datetime, timedelta
