@@ -17,18 +17,7 @@ dashboard_bp = Blueprint('dashboard', __name__)
 @login_required
 def index():
     """Main dashboard page with comprehensive metrics"""
-    # Log dashboard access
-    DashboardActivity.log_activity(
-        user_id=current_user.id,
-        activity_type='dashboard_access',
-        description=f'{current_user.username} accessed dashboard'
-    )
-    
-    # Get user preferences for dashboard layout
-    preferences = UserPreferences.query.filter_by(user_id=current_user.id).all()
-    user_prefs = {pref.preference_key: json.loads(pref.preference_value) for pref in preferences}
-    
-    return render_template('dashboard/dashboard.html', user_preferences=user_prefs)
+    return f"<h1>Welcome to the Dashboard, {current_user.name}!</h1><p>Login successful! Your role is: {current_user.role}</p>"
 
 
 @dashboard_bp.route('/api/metrics')

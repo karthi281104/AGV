@@ -53,7 +53,7 @@ def login():
             # Login user
             login_user(demo_user)
             flash('Login successful!', 'success')
-            return redirect(url_for('main.dashboard'))
+            return redirect(url_for('dashboard.index'))
         
         # Check for other demo users
         demo_users = {
@@ -91,7 +91,7 @@ def login():
                 # Login user
                 login_user(user)
                 flash('Login successful!', 'success')
-                return redirect(url_for('main.dashboard'))
+                return redirect(url_for('dashboard.index'))
         
         flash('Invalid email or password.', 'error')
         return render_template('auth/login.html')
@@ -176,7 +176,7 @@ def auth0_callback():
             session['user_session_id'] = session_id
             
             login_user(user)
-            return redirect(url_for('main.dashboard'))
+            return redirect(url_for('dashboard.index'))
         
         flash('Authentication failed.', 'error')
         return redirect(url_for('auth.login'))
