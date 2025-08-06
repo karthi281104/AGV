@@ -11,10 +11,20 @@ class Config:
     AUTH0_CLIENT_SECRET = os.environ.get('AUTH0_CLIENT_SECRET')
     AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
     AUTH0_BASE_URL = f"https://{AUTH0_DOMAIN}" if AUTH0_DOMAIN else None
-    AUTH0_AUDIENCE = os.environ.get('AUTH0_AUDIENCE')
+    AUTH0_AUDIENCE = os.environ.get('AUTH0_AUDIENCE', '')
+    AUTH0_CALLBACK_URL = os.environ.get('AUTH0_CALLBACK_URL', 'http://localhost:5000/auth/callback')
 
     # Session Configuration
-    PERMANENT_SESSION_LIFETIME = timedelta(hours=8)
+    SESSION_PERMANENT = False
+    SESSION_TYPE = 'filesystem'
+    PERMANENT_SESSION_LIFETIME = timedelta(hours=2)
+    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+
+    # WebAuthn settings
+    WEBAUTHN_RP_ID = os.environ.get('WEBAUTHN_RP_ID', 'localhost')
+    WEBAUTHN_RP_NAME = 'AGV Finance & Loans'
 
     # File Upload Configuration
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
